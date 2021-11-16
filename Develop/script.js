@@ -1,4 +1,17 @@
 // Assignment code here
+var passwordLength = window.prompt("How long would you like your password to be? Please enter between 8 and 128 characters.");
+localStorage.setItem("passwordLength", passwordLength);
+
+
+
+
+
+
+var userInput = function() {
+  if (userClick) {
+    var passwordLength = window.prompt("How long would you like your password to be? Please select between 8 and 128 characters.")
+  }
+}
 
 
 // Get references to the #generate element
