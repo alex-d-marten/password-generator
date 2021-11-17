@@ -1,7 +1,20 @@
 // Assignment code here
-var passwordLength = window.prompt("How long would you like your password to be? Please enter between 8 and 128 characters.");
-localStorage.setItem("passwordLength", passwordLength);
+var inputPasswordLength = function() {
+  var passwordLength = window.prompt("How long would you like your password to be? Please enter between 8 and 128 characters.");
+  
+  // validation logic for password length
+  if (passwordLength === "" || passwordLength === null || passwordLength < 8 || passwordLength > 128) {
+    window.alert("You need to provide a valid response! Please enter a value between 8 and 128.")
+    return inputPasswordLength();
+  }
+  
+  else {
+    localStorage.setItem("passwordLength", passwordLength);
+  }
 
+}
+
+inputPasswordLength();
 
 
 
