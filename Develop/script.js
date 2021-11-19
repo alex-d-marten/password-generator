@@ -1,10 +1,13 @@
 // Assignment code here
+var minLength = 8;
+var maxLength = 128;
+
 var inputPasswordLength = function() {
   var passwordLength = window.prompt("How long would you like your password to be? Please enter between 8 and 128 characters.");
   
   // validation logic for password length
-  if (passwordLength === "" || passwordLength === null || passwordLength < 8 || passwordLength > 128) {
-    window.alert("You need to provide a valid response! Please enter a value between 8 and 128.")
+  if (passwordLength === null || passwordLength < minLength || passwordLength > maxLength || !(Number.isInteger(passwordLength))) {
+    window.alert("You need to provide a valid response! Please enter a whole number between 8 and 128.")
     return inputPasswordLength();
   }
   
@@ -13,12 +16,11 @@ var inputPasswordLength = function() {
   }
 
 }
-
 inputPasswordLength();
 
-
-
-
+// grab passwordLength from localStorage and store globally
+var passwordLength = localStorage.getItem("passwordLength");
+console.log(passwordLength);
 
 var userInput = function() {
   if (userClick) {
