@@ -4,12 +4,12 @@ var minLength = 8;
 var maxLength = 128;
 var password = [];
 // adding a space in the beginning makes the first element of the array blank which is helpful for random selection of all array elements
-var alphabet = " abcdefghijklmnopqrstuvwxyz";
+var alphabet = "abcdefghijklmnopqrstuvwxyz";
 var lowerCaseLetters = alphabet.split('');
 var upperCaseLetters = alphabet.toUpperCase();
 upperCaseLetters = upperCaseLetters.split('');
-var numbers = ' 123456789'.split('');
-var specialCharacters = " '`~!@#$%^&*()_-=+<>,./?[]{}\|;:".split('');
+var numbers = '123456789'.split('');
+var specialCharacters = "'`~!@#$%^&*()_-=+<>,./?[]{}\|;:".split('');
 
 var inputPasswordLength = function() {
   var passwordLength = window.prompt("How long would you like your password to be? Please enter between 8 and 128 characters.");
@@ -63,38 +63,38 @@ function writePassword() {
 
   // password generation logic
   for (var i = 0; i < passwordLength; i++) {
-    charSelector = 0.23;
+    var charSelector = Math.random();
     // Math.random();
-    arrayMultiplier = Math.random();
+    var arrayMultiplier = Math.random();
     // need to store the randomly selected characters and then make a string out of it somehow
-    // Array.join('') may work to combine an array to one continuous string
     // Array.push() adds new element to array
 
     if(desiredCharacters[0] && charSelector < 0.25) {
       // generate a random lowercase value and store it in password
-      // var passwordCharacter;
-      var characterIndex = Math.floor(arrayMultiplier*lowerCaseLetters.length + 1);
+      var characterIndex = Math.floor(arrayMultiplier*lowerCaseLetters.length);
       var randomCharacter = lowerCaseLetters[characterIndex];
-      // debugger;
-      // console.log(passwordCharacter);
+      localStorage.setItem("randomCharacter", randomCharacter);
+    } else if (desiredCharacters[1] && charSelector > 0.25 && charSelector < 0.50) {
+      // generate a random uppercase value and store it in password
+      var characterIndex = Math.floor(arrayMultiplier*upperCaseLetters.length );
+      var randomCharacter = upperCaseLetters[characterIndex];
+      localStorage.setItem("randomCharacter", randomCharacter);
+    } else if(desiredCharacters[2] && charSelector > 0.50 && charSelector < 0.75) {
+      // generate a random number from 1-9 and store it in password
+      var characterIndex = Math.floor(arrayMultiplier*numbers.length);
+      var randomCharacter = numbers[characterIndex];
+      localStorage.setItem("randomCharacter", randomCharacter);
+    } else if (desiredCharacters[3] && charSelector > 0.75) {
+      // generate a random special character and store it in password
+      var characterIndex = Math.floor(arrayMultiplier*specialCharacters.length);
+      var randomCharacter = specialCharacters[characterIndex];
       localStorage.setItem("randomCharacter", randomCharacter);
     }
-
     var randomCharacter = localStorage.getItem("randomCharacter");
     password.push(randomCharacter);
     passwordString = password.join('');
 
     localStorage.setItem("passwordString", passwordString);
-    console.log(passwordText);
-    // else if(desiredCharacters[1] && charSelector > 0.25 && charSelector < 0.50) {
-    //   // generate a random uppercase value and store it in password
-    // }
-    // else if(desiredCharacters[2] && charSelector > 0.50 && charSelector < 0.75) {
-    //   // generate a random number from 1-9 and store it in password
-    // }
-    // else if (desiredCharacters[3] && charSelector > 0.75) {
-    //   // generate a random special character and store it in password
-    // }
   }
   localStorage.removeItem("password");
   // An idea for getting random values is to do some math. Whatever the value of the array is you can do Math.random * [The Array] + 1
