@@ -4,13 +4,20 @@ var maxLength = 128;
 
 var inputPasswordLength = function() {
   var passwordLength = window.prompt("How long would you like your password to be? Please enter between 8 and 128 characters.");
-  
+  var decimalCheck = (passwordLength - Math.floor(passwordLength));
   // validation logic for password length
-  if (passwordLength === null || passwordLength < minLength || passwordLength > maxLength || !(Number.isInteger(passwordLength))) {
-    window.alert("You need to provide a valid response! Please enter a whole number between 8 and 128.")
+  if (passwordLength === null) {
+    window.alert("You need to provide a valid response! Please enter a whole number between 8 and 128.");
     return inputPasswordLength();
   }
-  
+  else if (passwordLength < minLength || passwordLength > maxLength) {
+    window.alert("You have entered a number outside the acceptable range. Please enter a whole number between 8 and 128.");
+    return inputPasswordLength();
+  }
+  else if (decimalCheck !== 0 || decimalCheck === NaN) {
+    window.alert("You have entered a decimal or text, please enter a whole number between 8 and 128!")
+    return inputPasswordLength();
+  }
   else {
     localStorage.setItem("passwordLength", passwordLength);
   }
