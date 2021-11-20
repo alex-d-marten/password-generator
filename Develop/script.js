@@ -98,7 +98,7 @@ function writePassword() {
       localStorage.setItem("randomCharacter", randomCharacter);
     } else if (desiredCharacters[1] && charSelector > 0.25 && charSelector < 0.50) {
       // generate a random uppercase value and store it in password
-      var characterIndex = Math.floor(arrayMultiplier*upperCaseLetters.length );
+      var characterIndex = Math.floor(arrayMultiplier*upperCaseLetters.length);
       var randomCharacter = upperCaseLetters[characterIndex];
       localStorage.setItem("randomCharacter", randomCharacter);
     } else if(desiredCharacters[2] && charSelector > 0.50 && charSelector < 0.75) {
@@ -139,4 +139,5 @@ generateBtn.addEventListener("click", writePassword);
 // Ideas for refactor
   // Make a function for the for loop as lots of code repeated here
   // go through comments and slim down if possible
+  // investigate upper case array
   // brainstorm some more
