@@ -7,8 +7,10 @@ var alphabet = "abcdefghijklmnopqrstuvwxyz";
 var lowerCaseLetters = alphabet.split('');
 var upperCaseLetters = alphabet.toUpperCase();
 upperCaseLetters = upperCaseLetters.split('');
-var numbers = '123456789'.split('');
+var numbers = '0123456789'.split('');
 var specialCharacters = "'`~!@#$%^&*()_-=+<>,./?[]{}\|;:".split('');
+// Get references to the #generate element
+var generateBtn = document.querySelector("#generate");
 
 var inputPasswordLength = function() {
   // prompt user for desired password length and store as variable
@@ -40,79 +42,144 @@ var inputPasswordLength = function() {
 
 // function to gather character specifications
 var inputCharacters = function() {
-  // array initiation for user character preferences
-  var desiredCharacters = [];
-
   // using a confirm approach. Ok provides true and Cancel provides false.
-
   // lowercase confirm
-  desiredCharacters[0] = window.confirm("Do you want LOWERCASE CHARACTERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
+  confirmLower = window.confirm("Do you want LOWERCASE CHARACTERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
   // uppercase confirm
-  desiredCharacters[1] = window.confirm("Do you want UPPERCASE CHARACTERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
+  confirmUpper = window.confirm("Do you want UPPERCASE CHARACTERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
   // numbers confirm
-  desiredCharacters[2] = window.confirm("Do you want NUMBERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
+  confirmNumber = window.confirm("Do you want NUMBERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
   // special characters confrim
-  desiredCharacters[3] = window.confirm("Do you want SPECIAL CHARACTERS? Select 'Ok' if so, if you do not then select 'Cancel'");
+  confirmSpecial = window.confirm("Do you want SPECIAL CHARACTERS? Select 'Ok' if so, if you do not then select 'Cancel'");
+
+  if (!confirmLower && !confirmUpper && !confirmNumber && !confirmSpecial) {
+    window.alert("You must choose at least one option. Try again!")
+    inputCharacters();
+  }
+
   // convert array to string so it can be stored with localStorage under key "desiredCharacters"
-  desiredCharacters = JSON.stringify(desiredCharacters);
-  localStorage.setItem("desiredCharacters", desiredCharacters);
+  localStorage.setItem("confirmLower", confirmLower);
+  localStorage.setItem("confirmUpper", confirmUpper);
+  localStorage.setItem("confirmNumber", confirmNumber);
+  localStorage.setItem("confirmSpecial", confirmSpecial);
 };
 
-// Get references to the #generate element
-var generateBtn = document.querySelector("#generate");
+// Function for random characters
+var characterGeneration = function(characterArray) {
+  var arrayMultiplier = Math.random();
+  var characterIndex = Math.floor(arrayMultiplier*characterArray.length);
+  var randomCharacter = characterArray[characterIndex];
+  localStorage.setItem("randomCharacter", randomCharacter);
+};
 
-// Write password to the #password input
-function writePassword() {
-  // declare password as empty array to prevent any issues upon page refresh
+var threePrompts = function(firstConfirm, secondConfirm, thirdConfirm, varOne, varTwo, varThree) {
+  var charSelector = Math.random();
+  if(firstConfirm && charSelector <= 0.33) {
+    characterGeneration(varOne);
+  } 
+  else if (secondConfirm && charSelector > 0.33 && charSelector <= 0.66) {
+    characterGeneration(varTwo);
+  } 
+  else if(thirdConfirm && charSelector > 0.66) {
+    characterGeneration(varThree);
+  } 
+};
+
+var twoPrompts = function(firstConfirm, varOne, varTwo) {
+  var charSelector = Math.random();
+  if(firstConfirm && charSelector <=0.5) {
+    characterGeneration(varOne);
+  }
+  else {
+    characterGeneration(varTwo);
+  }
+};
+
+var allFourPrompts = function() {
+  var charSelector = Math.random();
+  if(confirmLower && charSelector <= 0.25) {
+    characterGeneration(lowerCaseLetters);
+  } 
+  else if (confirmUpper && charSelector > 0.25 && charSelector <= 0.50) {
+    characterGeneration(upperCaseLetters);
+  } 
+  else if(confirmNumber && charSelector > 0.50 && charSelector <= 0.75) {
+    characterGeneration(numbers);
+  } 
+  else if (confirmSpecial && charSelector > 0.75) {
+    characterGeneration(specialCharacters);
+  }
+}
+
+var lessThanFourPrompts = function() {
   var password = [];
-  // run prompt functions for user input
-  inputPasswordLength();
-  inputCharacters();
-
-  // retrieve users prompt answers from local storage
   var passwordLength = localStorage.getItem("passwordLength");
-  var desiredCharacters = localStorage.getItem("desiredCharacters");
+  var confirmLower = localStorage.getItem("confirmLower");
+  var confirmUpper = localStorage.getItem("confirmUpper");
+  var confirmNumber = localStorage.getItem("confirmNumber");
+  var confirmSpecial = localStorage.getItem("confirmSpecial");
 
-  // convert desiredCharacters string back to an array
-  desiredCharacters = JSON.parse(desiredCharacters);
-
-  // password generation logic
   for (var i = 0; i < passwordLength; i++) {
-    // random number variable to decide which character/number to generate
-    var charSelector = Math.random();
-
-    // random number for array multiplier to provide random character/number
-    var arrayMultiplier = Math.random();
-
-    // if and else if statements for character selection
-    if(desiredCharacters[0] && charSelector < 0.25) {
-      // generate a random lowercase value and store it in password
-
-      // determine random index value to select from array
-      var characterIndex = Math.floor(arrayMultiplier*lowerCaseLetters.length);
-
-      // store randome character in variable from characterIndex
-      var randomCharacter = lowerCaseLetters[characterIndex];
-
-      // save to localStorage
-      localStorage.setItem("randomCharacter", randomCharacter);
-    } else if (desiredCharacters[1] && charSelector > 0.25 && charSelector < 0.50) {
-      // generate a random uppercase value and store it in password
-      var characterIndex = Math.floor(arrayMultiplier*upperCaseLetters.length);
-      var randomCharacter = upperCaseLetters[characterIndex];
-      localStorage.setItem("randomCharacter", randomCharacter);
-    } else if(desiredCharacters[2] && charSelector > 0.50 && charSelector < 0.75) {
-      // generate a random number from 1-9 and store it in password
-      var characterIndex = Math.floor(arrayMultiplier*numbers.length);
-      var randomCharacter = numbers[characterIndex];
-      localStorage.setItem("randomCharacter", randomCharacter);
-    } else if (desiredCharacters[3] && charSelector > 0.75) {
-      // generate a random special character and store it in password
-      var characterIndex = Math.floor(arrayMultiplier*specialCharacters.length);
-      var randomCharacter = specialCharacters[characterIndex];
-      localStorage.setItem("randomCharacter", randomCharacter);
+    console.log(confirmLower && confirmUpper && confirmNumber && confirmSpecial);
+    if(confirmLower === true && confirmUpper === true && confirmNumber === true && confirmSpecial === true) {
+      allFourPrompts();
     }
-
+    // no numbers
+    else if(!confirmNumber) {
+      threePrompts(confirmLower, confirmUpper, confirmSpecial, lowerCaseLetters, upperCaseLetters, specialCharacters);
+    }
+    // no special
+    else if(!confirmSpecial) {
+      threePrompts(confirmLower, confirmUpper, confirmNumber, lowerCaseLetters, upperCaseLetters, numbers);
+    }
+    // no upper
+    else if(!confirmUpper) {
+      threePrompts(confirmLower, confirmNumber, confirmSpecial, lowerCaseLetters, numbers, specialCharacters);
+    }
+    // no lower
+    else if(!confirmLower) {
+      threePrompts(confirmUpper, confirmNumber, confirmSpecial, upperCaseLetters, numbers, specialCharacters);
+    }
+    // lower and upper only
+    else if(confirmLower === true && confirmUpper === true) {
+      twoPrompts(confirmLower, lowerCaseLetters, upperCaseLetters);
+    }
+    // lower and number only
+    else if(confirmLower === true && confirmNumber === true) {
+      twoPrompts(confirmLower, lowerCaseLetters, numbers);
+    }
+    // lower and special only
+    else if(confirmLower === true && confirmSpecial === true) {
+      twoPrompts(confirmLower, lowerCaseLetters, specialCharacters);
+    }
+    // upper and special only
+    else if(confirmUpper === true && confirmSpecial === true) {
+      twoPrompts(confirmUpper, upperCaseLetters, specialCharacters);
+    }
+    // upper and number only
+    else if(confirmUpper === true && confirmNumber === true) {
+      twoPrompts(confirmUpper, upperCaseLetters, numbers);
+    }
+    // number and special only
+    else if(confirmNumber === true && confirmSpecial === true) {
+      twoPrompts(confirmNumber, numbers, specialCharacters);
+    }
+    // If only lower desired
+    else if (confirmLower) {
+      characterGeneration(lowerCaseLetters);
+    }
+    // If only upper desired
+    else if (confirmUpper) {
+      characterGeneration(upperCaseLetters);
+    }
+    // If only numbers desired
+    else if (confirmNumber) {
+      characterGeneration(numbers);
+    }
+    // If only special characters desired
+    else if (confirmSpecial) {
+      characterGeneration(specialCharacters);
+    }
     // retrieve randomCharacter from the localStorage
     var randomCharacter = localStorage.getItem("randomCharacter");
 
@@ -123,14 +190,23 @@ function writePassword() {
     var passwordString = password.join('');
     localStorage.setItem("passwordString", passwordString);
   }
-  // remove password from local storage to prevent errors upon page refresh
-  localStorage.removeItem("password");
+};
+
+
+// Write password to the #password input
+function writePassword() {
+  var passwordText = document.querySelector("#password");
+  var password = [];
+  // passwordText.textContent = "";
+  // run prompt functions for user input
+  inputPasswordLength();
+  inputCharacters();
+  lessThanFourPrompts();
 
   // retrieve passwordString from local storage and set as password string
   password = localStorage.getItem("passwordString");
-  // var password = generatePassword();
-  var passwordText = document.querySelector("#password");
   passwordText.value = password;
+  localStorage.removeItem("passwordString");
 };
 
 // Add event listener to generate button
@@ -138,6 +214,4 @@ generateBtn.addEventListener("click", writePassword);
 
 // Ideas for refactor
   // Make a function for the for loop as lots of code repeated here
-  // go through comments and slim down if possible
-  // investigate upper case array
-  // brainstorm some more
+  // Need to have if statements for each case and they all need to be unique for that case type. And if someone selects cancel for all options it should prompt user and have them try again
