@@ -44,13 +44,13 @@ var inputPasswordLength = function() {
 var inputCharacters = function() {
   // using a confirm approach. Ok provides true and Cancel provides false.
   // lowercase confirm
-  confirmLower = window.confirm("Do you want LOWERCASE CHARACTERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
+  var confirmLower = window.confirm("Do you want LOWERCASE CHARACTERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
   // uppercase confirm
-  confirmUpper = window.confirm("Do you want UPPERCASE CHARACTERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
+  var confirmUpper = window.confirm("Do you want UPPERCASE CHARACTERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
   // numbers confirm
-  confirmNumber = window.confirm("Do you want NUMBERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
+  var confirmNumber = window.confirm("Do you want NUMBERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
   // special characters confrim
-  confirmSpecial = window.confirm("Do you want SPECIAL CHARACTERS? Select 'Ok' if so, if you do not then select 'Cancel'");
+  var confirmSpecial = window.confirm("Do you want SPECIAL CHARACTERS? Select 'Ok' if so, if you do not then select 'Cancel'");
 
   if (!confirmLower && !confirmUpper && !confirmNumber && !confirmSpecial) {
     window.alert("You must choose at least one option. Try again!")
@@ -97,6 +97,10 @@ var twoPrompts = function(firstConfirm, varOne, varTwo) {
 
 var allFourPrompts = function() {
   var charSelector = Math.random();
+  var confirmLower = localStorage.getItem("confirmLower");
+  var confirmUpper = localStorage.getItem("confirmUpper");
+  var confirmNumber = localStorage.getItem("confirmNumber");
+  var confirmSpecial = localStorage.getItem("confirmSpecial");
   if(confirmLower && charSelector <= 0.25) {
     characterGeneration(lowerCaseLetters);
   } 
@@ -120,8 +124,8 @@ var lessThanFourPrompts = function() {
   var confirmSpecial = localStorage.getItem("confirmSpecial");
 
   for (var i = 0; i < passwordLength; i++) {
-    console.log(confirmLower && confirmUpper && confirmNumber && confirmSpecial);
-    if(confirmLower === true && confirmUpper === true && confirmNumber === true && confirmSpecial === true) {
+    debugger; 
+    if(confirmLower && confirmUpper && confirmNumber && confirmSpecial) {
       allFourPrompts();
     }
     // no numbers
@@ -141,27 +145,27 @@ var lessThanFourPrompts = function() {
       threePrompts(confirmUpper, confirmNumber, confirmSpecial, upperCaseLetters, numbers, specialCharacters);
     }
     // lower and upper only
-    else if(confirmLower === true && confirmUpper === true) {
+    else if(confirmLower && confirmUpper) {
       twoPrompts(confirmLower, lowerCaseLetters, upperCaseLetters);
     }
     // lower and number only
-    else if(confirmLower === true && confirmNumber === true) {
+    else if(confirmLower && confirmNumber) {
       twoPrompts(confirmLower, lowerCaseLetters, numbers);
     }
     // lower and special only
-    else if(confirmLower === true && confirmSpecial === true) {
+    else if(confirmLower && confirmSpecial) {
       twoPrompts(confirmLower, lowerCaseLetters, specialCharacters);
     }
     // upper and special only
-    else if(confirmUpper === true && confirmSpecial === true) {
+    else if(confirmUpper && confirmSpecial) {
       twoPrompts(confirmUpper, upperCaseLetters, specialCharacters);
     }
     // upper and number only
-    else if(confirmUpper === true && confirmNumber === true) {
+    else if(confirmUpper && confirmNumber) {
       twoPrompts(confirmUpper, upperCaseLetters, numbers);
     }
     // number and special only
-    else if(confirmNumber === true && confirmSpecial === true) {
+    else if(confirmNumber && confirmSpecial) {
       twoPrompts(confirmNumber, numbers, specialCharacters);
     }
     // If only lower desired
