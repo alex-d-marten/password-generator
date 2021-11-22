@@ -1,4 +1,5 @@
 // Assignment code here
+
 // declare global variables
 var minLength = 8;
 var maxLength = 128;
@@ -9,16 +10,18 @@ var upperCaseLetters = alphabet.toUpperCase();
 upperCaseLetters = upperCaseLetters.split('');
 var numbers = '0123456789'.split('');
 var specialCharacters = "'`~!@#$%^&*()_-=+<>,./?[]{}\|;:".split('');
+
 // Get references to the #generate element
 var generateBtn = document.querySelector("#generate");
 
+// prompt for how long of a password is desired
 var inputPasswordLength = function() {
   // prompt user for desired password length and store as variable
   var passwordLength = window.prompt("How long would you like your password to be? Please enter between 8 and 128 characters.");
   // quick math check, if any remainder then it will be nonzero. Or if a string will be NaN.
   var decimalCheck = (passwordLength - Math.floor(passwordLength));
-  // validation logic for password length
 
+  // validation logic for password length
   // Preventing null entries
   if (passwordLength === null) {
     window.alert("You need to provide a valid response! Please enter a whole number between 8 and 128.");
@@ -51,6 +54,8 @@ var inputCharacters = function() {
   var confirmNumber = window.confirm("Do you want NUMBERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
   // special characters confrim
   var confirmSpecial = window.confirm("Do you want SPECIAL CHARACTERS? Select 'Ok' if so, if you do not then select 'Cancel'");
+
+  // validation to prevent no entry from user
   if (!confirmLower && !confirmUpper && !confirmNumber && !confirmSpecial) {
     window.alert("You must choose at least one option. Try again!")
     inputCharacters();
@@ -58,7 +63,7 @@ var inputCharacters = function() {
     return;
   }
 
-  // convert array to string so it can be stored with localStorage under key "desiredCharacters"
+  // store user character desires in local storage. IMPORTANT: These will become strings once in localStorage and need to be changed back to boolean after retrieval
   localStorage.setItem("confirmLower", confirmLower);
   localStorage.setItem("confirmUpper", confirmUpper);
   localStorage.setItem("confirmNumber", confirmNumber);
@@ -73,6 +78,7 @@ var characterGeneration = function(characterArray) {
   localStorage.setItem("randomCharacter", randomCharacter);
 };
 
+// Function for 3 characters desired from user
 var threePrompts = function(firstConfirm, secondConfirm, thirdConfirm, varOne, varTwo, varThree) {
   var charSelector = Math.random();
 
@@ -87,6 +93,7 @@ var threePrompts = function(firstConfirm, secondConfirm, thirdConfirm, varOne, v
   } 
 };
 
+// function for two characters desired from user
 var twoPrompts = function(firstConfirm, varOne, varTwo) {
   var charSelector = Math.random();
 
@@ -98,6 +105,7 @@ var twoPrompts = function(firstConfirm, varOne, varTwo) {
   }
 };
 
+// function for all four prompts desired, felt cleaner to separate this if from the remainder in the generation below
 var allFourPrompts = function() {
   var charSelector = Math.random();
 
@@ -115,9 +123,14 @@ var allFourPrompts = function() {
   }
 }
 
-var lessThanFourPrompts = function() {
+// Password generation function
+var passwordGeneration = function() {
+  // declare empty array to prevent errors upon page refresh
   var password = [];
+  // import passwword length input from local storage
   var passwordLength = localStorage.getItem("passwordLength");
+
+  // import character choices from local storage and convert back to boolean values
   var confirmLower = localStorage.getItem("confirmLower");
   const lowerBool = confirmLower === 'true';
   var confirmUpper = localStorage.getItem("confirmUpper");
@@ -127,6 +140,7 @@ var lessThanFourPrompts = function() {
   var confirmSpecial = localStorage.getItem("confirmSpecial");
   const specialBool = confirmSpecial === 'true';
 
+  // initiate for loop for password generation 
   for (var i = 0; i < passwordLength; i++) {
     if(lowerBool && upperBool && numberBool && specialBool) {
       allFourPrompts();
@@ -199,18 +213,18 @@ var lessThanFourPrompts = function() {
   }
 };
 
-
 // Write password to the #password input
 function writePassword() {
   var passwordText = document.querySelector("#password");
   var password = [];
-  // passwordText.textContent = "";
   // run prompt functions for user input
   inputPasswordLength();
   inputCharacters();
-  lessThanFourPrompts();
 
-  // retrieve passwordString from local storage and set as password string
+  // run password generation
+  passwordGeneration();
+
+  // retrieve passwordString from local storage and set as password string. Display to user
   password = localStorage.getItem("passwordString");
   passwordText.value = password;
   localStorage.removeItem("passwordString");
