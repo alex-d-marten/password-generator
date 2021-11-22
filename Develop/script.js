@@ -51,7 +51,6 @@ var inputCharacters = function() {
   var confirmNumber = window.confirm("Do you want NUMBERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
   // special characters confrim
   var confirmSpecial = window.confirm("Do you want SPECIAL CHARACTERS? Select 'Ok' if so, if you do not then select 'Cancel'");
-  debugger;
   if (!confirmLower && !confirmUpper && !confirmNumber && !confirmSpecial) {
     window.alert("You must choose at least one option. Try again!")
     inputCharacters();
