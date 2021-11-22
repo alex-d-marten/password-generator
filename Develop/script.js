@@ -51,10 +51,12 @@ var inputCharacters = function() {
   var confirmNumber = window.confirm("Do you want NUMBERS in your password? Select 'Ok' if so, if you do not then select 'Cancel'");
   // special characters confrim
   var confirmSpecial = window.confirm("Do you want SPECIAL CHARACTERS? Select 'Ok' if so, if you do not then select 'Cancel'");
-
+  debugger;
   if (!confirmLower && !confirmUpper && !confirmNumber && !confirmSpecial) {
     window.alert("You must choose at least one option. Try again!")
     inputCharacters();
+    // return needed here or booleans overwritten to false
+    return;
   }
 
   // convert array to string so it can be stored with localStorage under key "desiredCharacters"
@@ -74,6 +76,7 @@ var characterGeneration = function(characterArray) {
 
 var threePrompts = function(firstConfirm, secondConfirm, thirdConfirm, varOne, varTwo, varThree) {
   var charSelector = Math.random();
+
   if(firstConfirm && charSelector <= 0.33) {
     characterGeneration(varOne);
   } 
@@ -87,6 +90,7 @@ var threePrompts = function(firstConfirm, secondConfirm, thirdConfirm, varOne, v
 
 var twoPrompts = function(firstConfirm, varOne, varTwo) {
   var charSelector = Math.random();
+
   if(firstConfirm && charSelector <=0.5) {
     characterGeneration(varOne);
   }
@@ -97,20 +101,17 @@ var twoPrompts = function(firstConfirm, varOne, varTwo) {
 
 var allFourPrompts = function() {
   var charSelector = Math.random();
-  var confirmLower = localStorage.getItem("confirmLower");
-  var confirmUpper = localStorage.getItem("confirmUpper");
-  var confirmNumber = localStorage.getItem("confirmNumber");
-  var confirmSpecial = localStorage.getItem("confirmSpecial");
-  if(confirmLower && charSelector <= 0.25) {
+
+  if(charSelector <= 0.25) {
     characterGeneration(lowerCaseLetters);
   } 
-  else if (confirmUpper && charSelector > 0.25 && charSelector <= 0.50) {
+  else if (charSelector > 0.25 && charSelector <= 0.50) {
     characterGeneration(upperCaseLetters);
   } 
-  else if(confirmNumber && charSelector > 0.50 && charSelector <= 0.75) {
+  else if(charSelector > 0.50 && charSelector <= 0.75) {
     characterGeneration(numbers);
   } 
-  else if (confirmSpecial && charSelector > 0.75) {
+  else if (charSelector > 0.75) {
     characterGeneration(specialCharacters);
   }
 }
@@ -119,69 +120,72 @@ var lessThanFourPrompts = function() {
   var password = [];
   var passwordLength = localStorage.getItem("passwordLength");
   var confirmLower = localStorage.getItem("confirmLower");
+  const lowerBool = confirmLower === 'true';
   var confirmUpper = localStorage.getItem("confirmUpper");
+  const upperBool = confirmUpper === 'true';
   var confirmNumber = localStorage.getItem("confirmNumber");
+  const numberBool = confirmNumber === 'true';
   var confirmSpecial = localStorage.getItem("confirmSpecial");
+  const specialBool = confirmSpecial === 'true';
 
   for (var i = 0; i < passwordLength; i++) {
-    debugger; 
-    if(confirmLower && confirmUpper && confirmNumber && confirmSpecial) {
+    if(lowerBool && upperBool && numberBool && specialBool) {
       allFourPrompts();
     }
     // no numbers
-    else if(!confirmNumber) {
-      threePrompts(confirmLower, confirmUpper, confirmSpecial, lowerCaseLetters, upperCaseLetters, specialCharacters);
+    else if(lowerBool && upperBool && specialBool) {
+      threePrompts(lowerBool, upperBool, specialBool, lowerCaseLetters, upperCaseLetters, specialCharacters);
     }
     // no special
-    else if(!confirmSpecial) {
-      threePrompts(confirmLower, confirmUpper, confirmNumber, lowerCaseLetters, upperCaseLetters, numbers);
+    else if(lowerBool && upperBool && numberBool) {
+      threePrompts(lowerBool, upperBool, numberBool, lowerCaseLetters, upperCaseLetters, numbers);
     }
     // no upper
-    else if(!confirmUpper) {
-      threePrompts(confirmLower, confirmNumber, confirmSpecial, lowerCaseLetters, numbers, specialCharacters);
+    else if(lowerBool && numberBool && specialBool) {
+      threePrompts(lowerBool, numberBool, specialBool, lowerCaseLetters, numbers, specialCharacters);
     }
     // no lower
-    else if(!confirmLower) {
-      threePrompts(confirmUpper, confirmNumber, confirmSpecial, upperCaseLetters, numbers, specialCharacters);
+    else if(upperBool && numberBool && specialBool) {
+      threePrompts(upperBool, numberBool, specialBool, upperCaseLetters, numbers, specialCharacters);
     }
     // lower and upper only
-    else if(confirmLower && confirmUpper) {
-      twoPrompts(confirmLower, lowerCaseLetters, upperCaseLetters);
+    else if(lowerBool && upperBool) {
+      twoPrompts(lowerBool, lowerCaseLetters, upperCaseLetters);
     }
     // lower and number only
-    else if(confirmLower && confirmNumber) {
-      twoPrompts(confirmLower, lowerCaseLetters, numbers);
+    else if(lowerBool && numberBool) {
+      twoPrompts(lowerBool, lowerCaseLetters, numbers);
     }
     // lower and special only
-    else if(confirmLower && confirmSpecial) {
-      twoPrompts(confirmLower, lowerCaseLetters, specialCharacters);
+    else if(lowerBool && specialBool) {
+      twoPrompts(lowerBool, lowerCaseLetters, specialCharacters);
     }
     // upper and special only
-    else if(confirmUpper && confirmSpecial) {
-      twoPrompts(confirmUpper, upperCaseLetters, specialCharacters);
+    else if(upperBool && specialBool) {
+      twoPrompts(upperBool, upperCaseLetters, specialCharacters);
     }
     // upper and number only
-    else if(confirmUpper && confirmNumber) {
-      twoPrompts(confirmUpper, upperCaseLetters, numbers);
+    else if(upperBool && numberBool) {
+      twoPrompts(upperBool, upperCaseLetters, numbers);
     }
     // number and special only
-    else if(confirmNumber && confirmSpecial) {
-      twoPrompts(confirmNumber, numbers, specialCharacters);
+    else if(numberBool && specialBool) {
+      twoPrompts(numberBool, numbers, specialCharacters);
     }
     // If only lower desired
-    else if (confirmLower) {
+    else if (lowerBool) {
       characterGeneration(lowerCaseLetters);
     }
     // If only upper desired
-    else if (confirmUpper) {
+    else if (upperBool) {
       characterGeneration(upperCaseLetters);
     }
     // If only numbers desired
-    else if (confirmNumber) {
+    else if (numberBool) {
       characterGeneration(numbers);
     }
     // If only special characters desired
-    else if (confirmSpecial) {
+    else if (specialBool) {
       characterGeneration(specialCharacters);
     }
     // retrieve randomCharacter from the localStorage
@@ -215,7 +219,3 @@ function writePassword() {
 
 // Add event listener to generate button
 generateBtn.addEventListener("click", writePassword);
-
-// Ideas for refactor
-  // Make a function for the for loop as lots of code repeated here
-  // Need to have if statements for each case and they all need to be unique for that case type. And if someone selects cancel for all options it should prompt user and have them try again
